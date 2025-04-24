@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5000"  # Mappe le port 5000 du conteneur sur 5001 de l'hôte
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=monapp
+      - DB_USER=admin
+      - DB_PASSWORD=secret
+      - ASPNETCORE_URLS=http://+:5000  # S'assure que l'application écoute sur le port 5000
+    depends_on:
+      - db
+    volumes:
+      - ./dataProtectionKeys:/root/.aspnet/DataProtection-Keys  # Persister les clés de protection
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=projet_ginf2
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
