@@ -7,22 +7,23 @@ services:
       - "4200:4200"
     depends_on:
       - backend
+    networks:
+      - app-network  # Ajout du réseau personnalisé
 
   backend:
     build: ./backend
     ports:
       - "5001:5000"  # Mappe le port 5000 du conteneur sur 5001 de l'hôte
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=monapp
-      - DB_USER=admin
-      - DB_PASSWORD=secret
-      - ASPNETCORE_URLS=http://+:5000  # S'assure que l'application écoute sur le port 5000
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=projet_ginf2;Username=admin;Password=admin123
+      - ASPNETCORE_URLS=http://+:5000
     depends_on:
       - db
     volumes:
       - ./dataProtectionKeys:/root/.aspnet/DataProtection-Keys  # Persister les clés de protection
+    networks:
+      - app-network  # Ajout du réseau personnalisé
 
   db:
     image: postgres:15
@@ -34,6 +35,12 @@ services:
       - POSTGRES_PASSWORD=admin123
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network  # Ajout du réseau personnalisé
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:  # Définir le réseau personnalisé
+    driver: bridge  # Utiliser le mode "bridge" pour la communication entre conteneurs

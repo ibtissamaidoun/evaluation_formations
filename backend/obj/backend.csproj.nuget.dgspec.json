@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\aidou.DELL\\Downloads\\Projet_DotNet\\backend\\backend\\backend.csproj": {}
+    "C:\\Users\\aidou.DELL\\evaluation_formations\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\aidou.DELL\\Downloads\\Projet_DotNet\\backend\\backend\\backend.csproj": {
+    "C:\\Users\\aidou.DELL\\evaluation_formations\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aidou.DELL\\Downloads\\Projet_DotNet\\backend\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\aidou.DELL\\evaluation_formations\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\aidou.DELL\\Downloads\\Projet_DotNet\\backend\\backend\\backend.csproj",
+        "projectPath": "C:\\Users\\aidou.DELL\\evaluation_formations\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\aidou.DELL\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aidou.DELL\\Downloads\\Projet_DotNet\\backend\\backend\\obj\\",
+        "outputPath": "C:\\Users\\aidou.DELL\\evaluation_formations\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -22,15 +22,15 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net9.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -47,8 +47,24 @@
         "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
