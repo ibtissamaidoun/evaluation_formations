@@ -11,9 +11,10 @@ build_frontend:
   image: node:18
   script:
     - cd frontend
-    - npm install -g @angular/cli
-    - npm install
-    - ng build
+    - npm install -g @angular/cli      # Assure-toi que Angular CLI est installé
+    - npm install                      # Installe les dépendances
+    - npm install @angular-devkit/build-angular # Forcer l'installation si nécessaire
+    - ng build                         # Build du projet Angular
   artifacts:
     paths:
       - frontend/dist/
