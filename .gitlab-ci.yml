@@ -11,8 +11,9 @@ build_frontend:
   image: node:18
   script:
     - cd frontend
-    - npm install -g @angular/cli            # Installe Angular CLI
+    - npm install -g @angular/cli            # Assure-toi qu'Angular CLI est bien installé
     - npm install --legacy-peer-deps         # Force la résolution des dépendances conflictuelles
+    - npm install @angular-devkit/build-angular --save-dev  # Force l'installation de ce package
     - ng build                               # Compile le projet Angular
   artifacts:
     paths:
