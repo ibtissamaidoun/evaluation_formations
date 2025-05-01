@@ -11,14 +11,16 @@ build_frontend:
   image: node:18
   script:
     - cd frontend
+    - npm install -g @angular/cli
     - npm install
-    - npm run build
+    - ng build
   artifacts:
     paths:
       - frontend/dist/
   only:
     - develop
     - main
+
 
 # Job pour builder le backend .NET
 build_backend:
