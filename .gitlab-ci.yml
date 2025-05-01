@@ -21,11 +21,10 @@ build_frontend:
     - develop
     - main
 
-
-# Job pour builder le backend .NET
+# Job pour builder le backend .NET 8
 build_backend:
   stage: build
-  image: mcr.microsoft.com/dotnet/sdk:7.0
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   services:
     - name: postgres:15
       alias: db
