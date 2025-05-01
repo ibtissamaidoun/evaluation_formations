@@ -11,16 +11,15 @@ build_frontend:
   image: node:18
   script:
     - cd frontend
-    - npm install -g @angular/cli          # Assure-toi qu'Angular CLI est bien installé
-    - npm install --legacy-peer-deps       # Force la résolution des dépendances
-    - ng build                             # Compile le projet Angular
+    - npm install -g @angular/cli            # Installe Angular CLI
+    - npm install --legacy-peer-deps         # Force la résolution des dépendances conflictuelles
+    - ng build                               # Compile le projet Angular
   artifacts:
     paths:
-      - frontend/dist/                     # Sauvegarde le dossier 'dist' pour l'artifact
+      - frontend/dist/                       # Sauvegarde du dossier 'dist' contenant le build
   only:
     - develop
     - main
-
 # Job pour builder le backend .NET 8
 build_backend:
   stage: build
