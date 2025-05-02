@@ -8,10 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));  // Si tu utilises PostgreSQL
 // Pour SQL Server, utilise : options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).
-builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 {
-    options.ValidationInterval = TimeSpan.Zero;
+    opt.TokenLifespan = TimeSpan.FromHours(3); // durée de vie plus longue du token
 });
+
 // Ajouter Identity pour la gestion des utilisateurs
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
