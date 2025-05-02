@@ -33,10 +33,20 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 // Ajouter Razor Pages pour les pages Web
 builder.Services.AddRazorPages();
 
+// Ajouter la configuration CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 // Construire l'application
 var app = builder.Build();
 
-// ➡️ Appliquer automatiquement les migrations (Ajout important ici)
+//  Appliquer automatiquement les migrations (Ajout important ici)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -53,7 +63,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors("AllowAllOrigins");  // Appliquer CORS
 app.UseAuthentication();  // Authentification des utilisateurs
 app.UseAuthorization();   // Autorisation
 

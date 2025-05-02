@@ -19,6 +19,9 @@ import { RouterModule } from '@angular/router';
 export class ForgotPasswordComponent implements OnInit {
 
   forgotPasswordForm!: FormGroup;
+  successMessage: string = ''; // Pour afficher un message de succès
+  errorMessage: string = ''; // Pour afficher un message d'erreur
+
 
   constructor(
     private authService: AuthService,
@@ -36,15 +39,20 @@ export class ForgotPasswordComponent implements OnInit {
     if (this.forgotPasswordForm.valid) {
       const email = this.forgotPasswordForm.value.email;
       
-      this.authService.forgotPassword(email).subscribe(
-        response => {
+      this.authService.forgotPassword(email).subscribe({
+        next: (response) => {
           console.log('Email de réinitialisation envoyé');
-          this.router.navigate(['/login']);
+          // this.router.navigate(['/login']);
+          this.successMessage = 'Password reset email sent successfully';
+          this.errorMessage = '';
         },
-        error => {
+        error: (error) => {
           console.error('Erreur lors de l\'envoi du lien de réinitialisation', error);
+          this.errorMessage = 'Error sending the reset link .';
+          this.successMessage = '';
         }
-      );
+      });
+      
     }
   }
 }
