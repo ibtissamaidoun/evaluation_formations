@@ -1,0 +1,43 @@
+stages:
+  - build
+
+variables:
+  NODE_ENV: "production"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+
+# Job pour builder le frontend Angular
+build_frontend:
+  stage: build
+  image: node:18
+  script:
+    - cd frontend
+    - npm install -g @angular/cli            # Assure-toi qu'Angular CLI est bien installé
+    - npm install --legacy-peer-deps         # Force la résolution des dépendances conflictuelles
+    - npm install @angular-devkit/build-angular --save-dev  # Force l'installation de ce package
+    - ng build                               # Compile le projet Angular
+  artifacts:
+    paths:
+      - frontend/dist/                       # Sauvegarde du dossier 'dist' contenant le build
+  only:
+    - develop
+    - main
+# Job pour builder le backend .NET 8
+build_backend:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  services:
+    - name: postgres:15
+      alias: db
+  variables:
+    DB_HOST: db
+    DB_PORT: 5432
+    DB_NAME: projet_ginf2
+    DB_USER: admin
+    DB_PASSWORD: admin123
+  script:
+    - cd backend
+    - dotnet restore
+    - dotnet build --configuration Release
+  only:
+    - develop
+    - main
