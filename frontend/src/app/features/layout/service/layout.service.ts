@@ -2,11 +2,11 @@ import { Injectable, effect, signal, computed } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface layoutConfig {
-   // preset?: string;
+    // preset?: string;
     // primary?: string;
     // surface?: string | undefined | null;
     darkTheme?: boolean;
-    // menuMode?: string;
+    menuMode?: string;
 }
 
 interface LayoutState {
@@ -31,7 +31,7 @@ export class LayoutService {
         // primary: 'emerald',
         // surface: null,
         darkTheme: false,
-        //menuMode: 'static'
+        menuMode: 'static'
     };
 
     _state: LayoutState = {
@@ -72,7 +72,7 @@ export class LayoutService {
 
     // getSurface = computed(() => this.layoutConfig().surface);
 
-    // isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
+    isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
 
     transitionComplete = signal<boolean>(false);
 
@@ -136,13 +136,13 @@ export class LayoutService {
     }
 
     onMenuToggle() {
-        // if (this.isOverlay()) {
-        //     this.layoutState.update((prev) => ({ ...prev, overlayMenuActive: !this.layoutState().overlayMenuActive }));
+        if (this.isOverlay()) {
+            this.layoutState.update((prev) => ({ ...prev, overlayMenuActive: !this.layoutState().overlayMenuActive }));
 
-        //     if (this.layoutState().overlayMenuActive) {
-        //         this.overlayOpen.next(null);
-        //     }
-        // }
+            if (this.layoutState().overlayMenuActive) {
+                this.overlayOpen.next(null);
+            }
+        }
 
         if (this.isDesktop()) {
             this.layoutState.update((prev) => ({ ...prev, staticMenuDesktopInactive: !this.layoutState().staticMenuDesktopInactive }));
