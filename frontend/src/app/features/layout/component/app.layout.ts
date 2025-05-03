@@ -30,7 +30,7 @@ export class AppLayout {
 
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
-    @ViewChild(AppTopbar) appTopBar!: AppTopbar;
+    // @ViewChild(AppTopbar) appTopBar!: AppTopbar;
 
     constructor(
         public layoutService: LayoutService,
@@ -91,9 +91,9 @@ export class AppLayout {
 
     get containerClass() {
         return {
-            'layout-overlay': this.layoutService.layoutConfig().menuMode === 'overlay',
-            'layout-static': this.layoutService.layoutConfig().menuMode === 'static',
-            'layout-static-inactive': this.layoutService.layoutState().staticMenuDesktopInactive && this.layoutService.layoutConfig().menuMode === 'static',
+            // 'layout-overlay': this.layoutService.layoutConfig().menuMode === 'overlay',
+            // 'layout-static': this.layoutService.layoutConfig().menuMode === 'static',
+            // 'layout-static-inactive': this.layoutService.layoutState().staticMenuDesktopInactive && this.layoutService.layoutConfig().menuMode === 'static',
             'layout-overlay-active': this.layoutService.layoutState().overlayMenuActive,
             'layout-mobile-active': this.layoutService.layoutState().staticMenuMobileActive
         };

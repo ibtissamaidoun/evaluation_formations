@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 
 // import { ResetComponent } from './features/reset/reset.component'; // Importer ton composant
 import { Dashboard } from './features/dashboard/dashboard';
-import { AppLayout } from './layout/component/app.layout';
+import { AppLayout } from './features/layout/component/app.layout';
 
   export const appRoutes: Routes = [
     {
@@ -19,6 +19,6 @@ import { AppLayout } from './layout/component/app.layout';
     // { path: 'landing', component: Landing },
     // { path: 'notfound', component: Notfound },
     // { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
-    { path: '**', redirectTo: '/notfound' }
+    // { path: '**', redirectTo: '/notfound' }
 ];
 
