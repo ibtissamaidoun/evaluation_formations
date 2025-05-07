@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj": {}
+    "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj": {
+    "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj",
+        "projectUniqueName": "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj",
         "projectName": "AuthenticationService",
-        "projectPath": "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj",
+        "projectPath": "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj",
         "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\obj\\",
+        "outputPath": "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

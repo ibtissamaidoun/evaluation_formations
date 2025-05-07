@@ -5687,8 +5687,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj": {
-              "projectPath": "C:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj"
+            "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj": {
+              "projectPath": "c:\\Users\\Dell\\Documents\\GINF2\\S4\\ProjetChailani\\evaluation_formations\\backend\\AuthenticationService\\AuthenticationService.csproj"
             }
           }
         }
