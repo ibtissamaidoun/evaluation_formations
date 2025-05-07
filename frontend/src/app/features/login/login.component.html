@@ -16,10 +16,10 @@
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </span>
-          <input type="text" formControlName="username" placeholder="Username" class="form-control">
+          <input type="text" formControlName="email" placeholder="Email" class="form-control">
         </div>
-        <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error-message">
-          Username is required
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+          Email is required
         </div>
       </div>
 
@@ -33,9 +33,18 @@
           </span>
           <input type="password" formControlName="password" placeholder="Password" class="form-control">
         </div>
-        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
-          Password is required
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error-message">
+          <div *ngIf="loginForm.get('password')?.errors?.['required']">
+            Password is required.
+          </div>
+          <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
+            Password must be at least 8 characters long.
+          </div>
+          <div *ngIf="loginForm.get('password')?.errors?.['pattern']">
+            Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
+          </div>
         </div>
+
       </div>
 
       <div class="form-options">
@@ -44,7 +53,7 @@
           <label for="rememberMe">Remember</label>
         </div>
         <div class="forgot-password">
-          <a href="javascript:void(0)" (click)="forgotPassword()">Forgot password?</a>
+          <a href="javascript:void(0)" (click)="navigateToForgotPassword()">Forgot password?</a>
         </div>
       </div>
 

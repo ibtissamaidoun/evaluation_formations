@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 export class TokenInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getToken();
 
     if (token) {
@@ -29,12 +29,20 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
+          // Si l'utilisateur n'est pas authentifié, on le déconnecte et on redirige vers la page de connexion
           this.authService.logout();
-          this.router.navigate(['/login']);
+          if (this.router.url !== '/login') {
+            this.router.navigate(['/login']);
+          }
+        } else if (error.status === 500) {
+          // Par exemple, gestion d'une erreur serveur
+          console.error("Erreur serveur :", error.message);
         }
+        // Retourner l'erreur pour que l'application continue de fonctionner normalement
         return throwError(() => error);
       })
     );
+
   }
 }
 

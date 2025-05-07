@@ -1,14 +1,14 @@
 export interface LoginModel {
-  username: string;
+  email: string;
   password: string;
   rememberMe?: boolean;
 }
 
 export interface LoginResponse {
   token: string;
-  user: {
+  /*user: {
     id: number;
     username: string;
     // Ajoutez d'autres propriétés utilisateur si nécessaire
-  };
+  };*/
 }

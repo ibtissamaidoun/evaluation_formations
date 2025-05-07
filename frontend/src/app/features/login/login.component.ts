@@ -26,10 +26,15 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+      ]],
       rememberMe: [false]
     });
+
   }
 
   ngOnInit(): void {
@@ -48,9 +53,9 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
 
     const loginData: LoginModel = {
-      username: this.loginForm.value.username,
+      email: this.loginForm.value.email,
       password: this.loginForm.value.password,
-      rememberMe: this.loginForm.value.rememberMe
+      rememberMe: this.loginForm.value.rememberMe,
     };
 
     this.authService.login(loginData).subscribe({
@@ -60,24 +65,16 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Une erreur est survenue lors de la connexion';
-      }
+        // Utiliser l'erreur reçue du service
+        this.errorMessage = error.message || 'Une erreur est survenue lors de la connexion';
+      },
     });
   }
 
-  forgotPassword(): void {
-    const email = this.loginForm.get('username')?.value;
-    if (email) {
-      this.authService.forgotPassword(email).subscribe({
-        next: () => {
-          alert('Un email de récupération a été envoyé à votre adresse email.');
-        },
-        error: (error) => {
-          alert(error.error?.message || 'Une erreur est survenue lors de l\'envoi de l\'email de récupération.');
-        }
-      });
-    } else {
-      alert('Veuillez entrer votre adresse email avant de demander la récupération du mot de passe.');
-    }
+   // Ajouter cette méthode
+   navigateToForgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
   }
+
+
 }
