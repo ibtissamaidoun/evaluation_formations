@@ -1,4 +1,4 @@
-using Backend.Models;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,21 +15,11 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
 });
 
 // Ajouter Identity pour la gestion des utilisateurs
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-{
-    // Configurer les options de mot de passe (exigences)
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequiredUniqueChars = 1;
-})
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+
+   
 
 // Ajouter les services personnalisés
-builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Ajouter Razor Pages pour les pages Web
