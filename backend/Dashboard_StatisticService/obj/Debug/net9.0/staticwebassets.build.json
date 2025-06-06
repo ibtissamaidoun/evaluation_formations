@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "5Gg6g1sutNcVZKWMqqoV47g173OD39VcUrH/0qVU35g=",
+  "Source": "Dashboard_StatisticService",
+  "BasePath": "_content/Dashboard_StatisticService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
