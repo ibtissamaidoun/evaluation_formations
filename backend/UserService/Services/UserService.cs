@@ -1,6 +1,11 @@
-using Microsoft.AspNetCore.Identity;
-using UserService.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 using UserService.DTOs;
+using UserService.Models;
 using UserService.Repositories;
 
 namespace UserService.Services
@@ -14,59 +19,186 @@ namespace UserService.Services
             _userRepository = userRepository;
         }
 
-        public async Task<User> CreateUserAsync(UserDTO userDto)
+        public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
         {
+            var users = await _userRepository.GetAllUsersAsync();
+            return users.Select(MapUserToResponseDto);
+        }
+
+        public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null)
+                return null;
+
+            return MapUserToResponseDto(user);
+        }
+
+        public async Task<UserResponseDto> CreateUserAsync(UserCreateDto userDto)
+        {
+            if (await _userRepository.UserExistsAsync(userDto.Email))
+                throw new InvalidOperationException($"User with email {userDto.Email} already exists.");
+
+            var role = await _userRepository.GetRoleByIdAsync(userDto.RoleId);
+            if (role == null)
+                throw new InvalidOperationException($"Role with ID {userDto.RoleId} does not exist.");
+
             var user = new User
             {
-                Name = userDto.Name,
+                Id = Guid.NewGuid(),
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
                 Email = userDto.Email,
-                Name = userDto.Name,
-                Role = userDto.Role
+                PhoneNumber = userDto.PhoneNumber,
+                PasswordHash = HashPassword(userDto.Password),
+                RoleId = userDto.RoleId,
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
             };
 
-            var success = await _userRepository.AddAsync(user, userDto.Password);
-            if (!success)
+            await _userRepository.CreateUserAsync(user);
+            
+            // Fetch the complete user with role information
+            user = await _userRepository.GetUserByIdAsync(user.Id);
+            return MapUserToResponseDto(user);
+        }
+
+        public async Task<UserResponseDto> UpdateUserAsync(Guid id, UserUpdateDto userDto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null)
+                return null;
+
+            // Update only provided fields
+            if (!string.IsNullOrWhiteSpace(userDto.FirstName))
+                user.FirstName = userDto.FirstName;
+
+            if (!string.IsNullOrWhiteSpace(userDto.LastName))
+                user.LastName = userDto.LastName;
+
+            if (!string.IsNullOrWhiteSpace(userDto.Email) && user.Email != userDto.Email)
             {
-                throw new Exception("Failed to create user");
+                if (await _userRepository.UserExistsAsync(userDto.Email))
+                    throw new InvalidOperationException($"Email {userDto.Email} is already in use.");
+                
+                user.Email = userDto.Email;
             }
 
-            return user;
-        }
+            if (!string.IsNullOrWhiteSpace(userDto.PhoneNumber))
+                user.PhoneNumber = userDto.PhoneNumber;
 
-        public async Task<User?> GetUserByIdAsync(string id)
-        {
-            return await _userRepository.GetByIdAsync(id);
-        }
-
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
-        {
-            // Since we don't have a method for this in the repository yet,
-            // we'll need to implement it or use a different approach
-            throw new NotImplementedException("GetAllUsersAsync is not implemented yet");
-        }
-
-        public async Task<User?> UpdateUserAsync(string id, UserDTO userDto)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null) return null;
-
-            user.UserName = userDto.UserName;
-            user.Email = userDto.Email;
-            user.Name = userDto.Name;
-            user.Role = userDto.Role;
-
-            var success = await _userRepository.UpdateAsync(user);
-            if (!success)
+            if (userDto.RoleId.HasValue && user.RoleId != userDto.RoleId.Value)
             {
-                throw new Exception("Failed to update user");
+                var role = await _userRepository.GetRoleByIdAsync(userDto.RoleId.Value);
+                if (role == null)
+                    throw new InvalidOperationException($"Role with ID {userDto.RoleId.Value} does not exist.");
+                
+                user.RoleId = userDto.RoleId.Value;
             }
 
-            return user;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _userRepository.UpdateUserAsync(user);
+            
+            // Fetch the updated user with role information
+            user = await _userRepository.GetUserByIdAsync(id);
+            return MapUserToResponseDto(user);
         }
 
-        public async Task<bool> DeleteUserAsync(string id)
+        public async Task<bool> UpdateUserPasswordAsync(Guid id, UserPasswordUpdateDto passwordDto)
         {
-            return await _userRepository.DeleteAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null)
+                return false;
+
+            // Verify current password
+            if (user.PasswordHash != HashPassword(passwordDto.CurrentPassword))
+                return false;
+
+            user.PasswordHash = HashPassword(passwordDto.NewPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+            
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+        }
+
+        public async Task<bool> DeleteUserAsync(Guid id)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id);
+            if (user == null)
+                return false;
+
+            await _userRepository.DeleteUserAsync(id);
+            return true;
+        }
+
+        public async Task<IEnumerable<UserRole>> GetAllRolesAsync()
+        {
+            return await _userRepository.GetAllRolesAsync();
+        }
+
+        public async Task<UserRole> GetRoleByIdAsync(Guid id)
+        {
+            return await _userRepository.GetRoleByIdAsync(id);
+        }
+
+        public async Task<UserRole> CreateRoleAsync(UserRoleDto roleDto)
+        {
+            var role = new UserRole
+            {
+                Id = Guid.NewGuid(),
+                Name = roleDto.Name,
+                Description = roleDto.Description
+            };
+
+            return await _userRepository.CreateRoleAsync(role);
+        }
+
+        public async Task<UserRole> UpdateRoleAsync(Guid id, UserRoleDto roleDto)
+        {
+            var role = await _userRepository.GetRoleByIdAsync(id);
+            if (role == null)
+                return null;
+
+            role.Name = roleDto.Name;
+            role.Description = roleDto.Description;
+
+            await _userRepository.UpdateRoleAsync(role);
+            return role;
+        }
+
+        public async Task<bool> DeleteRoleAsync(Guid id)
+        {
+            var role = await _userRepository.GetRoleByIdAsync(id);
+            if (role == null)
+                return false;
+
+            await _userRepository.DeleteRoleAsync(id);
+            return true;
+        }
+
+        private UserResponseDto MapUserToResponseDto(User user)
+        {
+            return new UserResponseDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role?.Name,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt,
+                IsActive = user.IsActive
+            };
+        }
+
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashedBytes);
+            }
         }
     }
 }

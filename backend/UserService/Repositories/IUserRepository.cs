@@ -1,13 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UserService.Models;
-using UserService.Services;
 
 namespace UserService.Repositories
 {
     public interface IUserRepository
     {
-        Task<User?> GetByIdAsync(string id);
-        Task<bool> AddAsync(User user, string password);
-        Task<bool> UpdateAsync(User user);
-        Task<bool> DeleteAsync(string id);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User> GetUserByIdAsync(Guid id);
+        Task<User> GetUserByEmailAsync(string email);
+        Task<bool> UserExistsAsync(string email);
+        Task<User> CreateUserAsync(User user);
+        Task UpdateUserAsync(User user);
+        Task DeleteUserAsync(Guid id);
+        Task<IEnumerable<UserRole>> GetAllRolesAsync();
+        Task<UserRole> GetRoleByIdAsync(Guid id);
+        Task<UserRole> CreateRoleAsync(UserRole role);
+        Task UpdateRoleAsync(UserRole role);
+        Task DeleteRoleAsync(Guid id);
     }
 }

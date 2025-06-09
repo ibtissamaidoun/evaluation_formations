@@ -1,77 +1,54 @@
-using UserService.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using UserService.Data;
 using UserService.Repositories;
 using UserService.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using UserService.Data;
 
-namespace UserService
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddControllers();
+
+// Add DbContext with PostgreSQL
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Add repositories and services
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
+
+// Add Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "User Service API", Version = "v1" });
+});
 
-            // Ajouter la configuration CORS
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngularDevClient", policy =>
-                {
-                    policy.WithOrigins("http://localhost:4200")  // Remplace cette URL par celle de ton frontend en production
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("http://localhost:4200") // Adjust as needed
                           .AllowAnyHeader()
-                          .AllowAnyMethod();
-                });
-            });
+                          .AllowAnyMethod());
+});
 
-            // Ajouter les services nécessaires à l'application
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+var app = builder.Build();
 
-            // Configurer Identity
-            builder.Services.AddIdentityCore<User>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager()
-                .AddDefaultTokenProviders();
-
-            // Ajouter les services de l'application
-            builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            // builder.Services.AddScoped<IEmailService, EmailService>(); // Assurez-vous d'ajouter le service d'email
-            builder.Services.AddControllers();
-            builder.Services.AddRazorPages();
-            builder.Services.AddEndpointsApiExplorer();
-
-            // Appliquer automatiquement les migrations
-            var app = builder.Build();
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                db.Database.Migrate();
-            }
-
-            // Configuration du pipeline de requêtes HTTP
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
-
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseHttpsRedirection();
-
-            // Mapping des contrôleurs et des pages Razor
-            app.MapControllers();
-            app.MapRazorPages();
-            app.UseCors("AllowAngularDevClient");
-
-            // Lancer l'application
-            app.Run();
-        }
-    }
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Service API v1"));
 }
+
+app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigin");
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();

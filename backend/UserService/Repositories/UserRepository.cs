@@ -1,43 +1,102 @@
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UserService.Data;
 using UserService.Models;
 
 namespace UserService.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserManager<User> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public UserRepository(UserManager<User> userManager)
+        public UserRepository(ApplicationDbContext context)
         {
-            _userManager = userManager;
+            _context = context;
         }
 
-        public async Task<User?> GetByIdAsync(string id)
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _userManager.FindByIdAsync(id);
+            return await _context.Users
+                .Include(u => u.Role)
+                .ToListAsync();
         }
 
-        public async Task<bool> AddAsync(User user, string password)
+        public async Task<User> GetUserByIdAsync(Guid id)
         {
-            var result = await _userManager.CreateAsync(user, password);
-            return result.Succeeded;
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<bool> UpdateAsync(User user)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            var result = await _userManager.UpdateAsync(user);
-            return result.Succeeded;
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
 
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<bool> UserExistsAsync(string email)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            return await _context.Users.AnyAsync(u => u.Email.ToLower() == email.ToLower());
+        }
+
+        public async Task<User> CreateUserAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            user.UpdatedAt = DateTime.UtcNow;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserAsync(Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
             {
-                return false;
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
             }
-            var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded;
+        }
+
+        public async Task<IEnumerable<UserRole>> GetAllRolesAsync()
+        {
+            return await _context.UserRoles.ToListAsync();
+        }
+
+        public async Task<UserRole> GetRoleByIdAsync(Guid id)
+        {
+            return await _context.UserRoles.FindAsync(id);
+        }
+
+        public async Task<UserRole> CreateRoleAsync(UserRole role)
+        {
+            await _context.UserRoles.AddAsync(role);
+            await _context.SaveChangesAsync();
+            return role;
+        }
+
+        public async Task UpdateRoleAsync(UserRole role)
+        {
+            _context.UserRoles.Update(role);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteRoleAsync(Guid id)
+        {
+            var role = await _context.UserRoles.FindAsync(id);
+            if (role != null)
+            {
+                _context.UserRoles.Remove(role);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
