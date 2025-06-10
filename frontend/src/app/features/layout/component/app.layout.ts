@@ -1,19 +1,28 @@
-import { Component, Renderer2, ViewChild } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { AppTopbar } from './app.topbar';
-import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
+import { AppMenu } from './app.menu';
+import { AppMenuAdmin } from './app.menuad';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
+    imports: [CommonModule, AppTopbar, RouterModule, AppFooter, AppMenu, AppMenuAdmin],
     template: `<div class="layout-wrapper" [ngClass]="containerClass">
         <app-topbar></app-topbar>
-        <app-sidebar></app-sidebar>
+        <div class="layout-sidebar">
+            <ng-container *ngIf="isAdminRoute(); else userMenu">
+                <app-menu-admin></app-menu-admin>
+            </ng-container>
+            <ng-template #userMenu>
+                <app-menu></app-menu>
+            </ng-template>
+        </div>
         <div class="layout-main-container">
             <div class="layout-main">
                 <router-outlet></router-outlet>
@@ -25,17 +34,14 @@ import { LayoutService } from '../service/layout.service';
 })
 export class AppLayout {
     overlayMenuOpenSubscription: Subscription;
-
     menuOutsideClickListener: any;
-
-    @ViewChild(AppSidebar) appSidebar!: AppSidebar;
-
-    // @ViewChild(AppTopbar) appTopBar!: AppTopbar;
+    currentRoute: string = '';
 
     constructor(
         public layoutService: LayoutService,
         public renderer: Renderer2,
-        public router: Router
+        public router: Router,
+        private authService: AuthService
     ) {
         this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
             if (!this.menuOutsideClickListener) {
@@ -51,9 +57,18 @@ export class AppLayout {
             }
         });
 
-        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: any) => {
+            this.currentRoute = event.url;
             this.hideMenu();
         });
+    }
+
+    isAdminRoute(): boolean {
+        return this.currentRoute.includes('dashboardAdmin') || 
+               this.currentRoute.includes('admin/reports') ||
+               this.currentRoute.includes('admin/forms') ||
+               this.currentRoute.includes('admin/users') ||
+               this.currentRoute.includes('admin/settings');
     }
 
     isOutsideClicked(event: MouseEvent) {

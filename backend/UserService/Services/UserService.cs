@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 using UserService.DTOs;
 using UserService.Models;
 using UserService.Repositories;
+using UserService.Events;
+using UserService.Kafka;
 
 namespace UserService.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IKafkaProducerService _kafkaProducer;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IKafkaProducerService kafkaProducer)
         {
             _userRepository = userRepository;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
@@ -28,10 +32,7 @@ namespace UserService.Services
         public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
-            if (user == null)
-                return null;
-
-            return MapUserToResponseDto(user);
+            return user == null ? null : MapUserToResponseDto(user);
         }
 
         public async Task<UserResponseDto> CreateUserAsync(UserCreateDto userDto)
@@ -57,10 +58,25 @@ namespace UserService.Services
             };
 
             await _userRepository.CreateUserAsync(user);
-            
-            // Fetch the complete user with role information
+
+            // Re-fetch with role info
             user = await _userRepository.GetUserByIdAsync(user.Id);
-            return MapUserToResponseDto(user);
+            var userResponse = MapUserToResponseDto(user);
+
+            // 👉 Publier l’événement Kafka
+            var userCreatedEvent = new UserCreatedEvent
+            {
+                UserId = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Role = user.Role?.Name ?? "Unknown",
+                CreatedAt = user.CreatedAt
+            };
+
+            await _kafkaProducer.PublishAsync("user-events", userCreatedEvent, user.Id.ToString());
+
+            return userResponse;
         }
 
         public async Task<UserResponseDto> UpdateUserAsync(Guid id, UserUpdateDto userDto)
@@ -69,7 +85,6 @@ namespace UserService.Services
             if (user == null)
                 return null;
 
-            // Update only provided fields
             if (!string.IsNullOrWhiteSpace(userDto.FirstName))
                 user.FirstName = userDto.FirstName;
 
@@ -80,7 +95,6 @@ namespace UserService.Services
             {
                 if (await _userRepository.UserExistsAsync(userDto.Email))
                     throw new InvalidOperationException($"Email {userDto.Email} is already in use.");
-                
                 user.Email = userDto.Email;
             }
 
@@ -92,14 +106,12 @@ namespace UserService.Services
                 var role = await _userRepository.GetRoleByIdAsync(userDto.RoleId.Value);
                 if (role == null)
                     throw new InvalidOperationException($"Role with ID {userDto.RoleId.Value} does not exist.");
-                
                 user.RoleId = userDto.RoleId.Value;
             }
 
             user.UpdatedAt = DateTime.UtcNow;
             await _userRepository.UpdateUserAsync(user);
-            
-            // Fetch the updated user with role information
+
             user = await _userRepository.GetUserByIdAsync(id);
             return MapUserToResponseDto(user);
         }
@@ -110,13 +122,12 @@ namespace UserService.Services
             if (user == null)
                 return false;
 
-            // Verify current password
             if (user.PasswordHash != HashPassword(passwordDto.CurrentPassword))
                 return false;
 
             user.PasswordHash = HashPassword(passwordDto.NewPassword);
             user.UpdatedAt = DateTime.UtcNow;
-            
+
             await _userRepository.UpdateUserAsync(user);
             return true;
         }
@@ -147,10 +158,12 @@ namespace UserService.Services
             {
                 Id = Guid.NewGuid(),
                 Name = roleDto.Name,
-                Description = roleDto.Description
+                Description = roleDto.Description,
+                CreatedAt = DateTime.UtcNow
             };
 
-            return await _userRepository.CreateRoleAsync(role);
+            await _userRepository.CreateRoleAsync(role);
+            return role;
         }
 
         public async Task<UserRole> UpdateRoleAsync(Guid id, UserRoleDto roleDto)
@@ -161,6 +174,7 @@ namespace UserService.Services
 
             role.Name = roleDto.Name;
             role.Description = roleDto.Description;
+            role.UpdatedAt = DateTime.UtcNow;
 
             await _userRepository.UpdateRoleAsync(role);
             return role;
@@ -194,11 +208,10 @@ namespace UserService.Services
 
         private string HashPassword(string password)
         {
-            using (var sha256 = SHA256.Create())
-            {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
+            using var sha256 = SHA256.Create();
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(hashedBytes);
         }
     }
 }
+

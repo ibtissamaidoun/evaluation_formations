@@ -1,0 +1,10 @@
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.RazorAssemblyInfo.cache
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.RazorAssemblyInfo.cs
+C:\Users\bouhn\evaluation_formations\backend\obj\Debug\net8.0\backend.sourcelink.json

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using UserService.Data;
+using UserService.Kafka;
 using UserService.Repositories;
 using UserService.Services;
 
@@ -20,6 +21,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add repositories and services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService.Services.UserService>();
+
+// Configure Kafka settings
+builder.Services.Configure<KafkaSettings>(builder.Configuration.GetSection("Kafka"));
+
+// Kafka services
+builder.Services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
+builder.Services.AddHostedService<KafkaConsumerHostedService>();
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();

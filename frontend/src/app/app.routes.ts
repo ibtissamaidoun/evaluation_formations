@@ -15,7 +15,9 @@ import { CcEvaluationComponent } from './features/pages/module-evaluation/CC/cc-
 import { ResetComponent } from './features/reset/reset.component';
 import { EspaceEvaluationComponent } from './features/pages/espace-evaluation/espace-evaluation.component';
 import { SchedulEvaluationComponent } from './features/pages/schedul-evaluation/schedul-evaluation.component';
-import { DashboardProfComponent } from './features/dashboard_Prof/dashboard_prof.component';
+import { DashboardAdminCompactComponent } from './features/dashboard_Admin/dashboard_admin-compact.component';
+import { EvaluationReportsComponent } from './features/pages/evaluation-reports/evaluation-reports';
+// import { DashboardProfComponent } from './features/dashboard_Prof/dashboard_prof.component';
 // import { Landing } from './app/pages/landing/landing';
 // import { Notfound } from './app/pages/notfound/notfound';
 
@@ -27,9 +29,9 @@ export const appRoutes: Routes = [
         component: AppLayout,
         children: [
             { path: 'dashboard', component: Dashboard },
-            { path: 'dashboardProf', component: DashboardProfComponent },
+            { path: 'dashboardAdmin', component: DashboardAdminCompactComponent },
             // { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'Evaluation', component: EvaluationComponent },
+            { path: 'EvaluationReports', component: EvaluationReportsComponent },
             { path: 'module-evaluation', component: ModuleEvaluationComponent },
             // { path: 'module-evaluation/module-detail/module-detail', component: ModuleDetailComponent },
             { path: 'module-evaluation/module-detail/liste', component: ListeComponent },
