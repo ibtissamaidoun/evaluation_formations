@@ -28,32 +28,29 @@ export class AppMenuAdmin {
                 label: 'Reports',
                 items: [
                     { label: 'Evaluation Reports', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/EvaluationReports'] },
-                    { label: 'Student Reports', icon: 'pi pi-fw pi-users', routerLink: ['/admin/reports/students'] },
-                    { label: 'Teacher Reports', icon: 'pi pi-fw pi-user', routerLink: ['/admin/reports/teachers'] }
+                   
                 ]
             },
             {
                 label: 'Form Management',
                 items: [
-                    { label: 'Create Form', icon: 'pi pi-fw pi-plus', routerLink: ['/admin/forms/create'] },
-                    { label: 'Manage Forms', icon: 'pi pi-fw pi-list', routerLink: ['/admin/forms/manage'] },
-                    { label: 'Form Templates', icon: 'pi pi-fw pi-file', routerLink: ['/admin/forms/templates'] }
+                    { label: 'Form managements', icon: 'pi pi-fw pi-plus', routerLink: ['/FormManagement'] },
+                    // { label: 'Manage Forms', icon: 'pi pi-fw pi-list', routerLink: ['/admin/forms/manage'] },
+                    // { label: 'Form Templates', icon: 'pi pi-fw pi-file', routerLink: ['/admin/forms/templates'] }
                 ]
             },
             {
                 label: 'User Management',
                 items: [
-                    { label: 'Students', icon: 'pi pi-fw pi-users', routerLink: ['/admin/users/students'] },
-                    { label: 'Teachers', icon: 'pi pi-fw pi-user', routerLink: ['/admin/users/teachers'] },
-                    { label: 'Administrators', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/users/admins'] }
+                    { label: 'User Management', icon: 'pi pi-fw pi-users', routerLink: ['/UserManagement'] },
+                  
                 ]
             },
             {
                 label: 'Settings',
                 items: [
-                    { label: 'General Settings', icon: 'pi pi-fw pi-cog', routerLink: ['/admin/settings/general'] },
-                    { label: 'Email Settings', icon: 'pi pi-fw pi-envelope', routerLink: ['/admin/settings/email'] },
-                    { label: 'Security Settings', icon: 'pi pi-fw pi-lock', routerLink: ['/admin/settings/security'] }
+                    { label: 'Settings', icon: 'pi pi-fw pi-cog', routerLink: ['/Settings'] },
+                   
                 ]
             }
             // {
