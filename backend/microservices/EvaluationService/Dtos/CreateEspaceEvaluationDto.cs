@@ -17,5 +17,8 @@ namespace EvaluationService.Dtos
 
         [Required(ErrorMessage = "Les réponses sont requises.")]
         public List<ReponseDto> Reponses { get; set; } // Liste des réponses
+
+        public int EspaceId { get; set; }
+
     }
 }

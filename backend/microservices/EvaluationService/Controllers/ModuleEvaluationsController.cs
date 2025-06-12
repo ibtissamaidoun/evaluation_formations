@@ -5,6 +5,8 @@ using EvaluationService.Models;
 using System.Threading.Tasks;
 using EvaluationService.Dtos;
 using EvaluationService.Services;
+using Confluent.Kafka;
+
 namespace EvaluationService.Controllers
 {
     [ApiController]
@@ -12,10 +14,14 @@ namespace EvaluationService.Controllers
     public class ModuleEvaluationController : ControllerBase
     {
         private readonly ModuleEvaluationService _service;
-
-        public ModuleEvaluationController(ModuleEvaluationService service)
+        private readonly KafkaEventPublisher _kafkaPublisher; 
+        private readonly ILogger<ModuleEvaluationController> _logger;
+        public ModuleEvaluationController(ModuleEvaluationService service, KafkaEventPublisher kafkaPublisher,
+            ILogger<ModuleEvaluationController> logger)
         {
             _service = service;
+            _kafkaPublisher = kafkaPublisher;
+            _logger = logger;
         }
 
         // Méthode POST pour soumettre l'évaluation du module
@@ -32,10 +38,30 @@ namespace EvaluationService.Controllers
                 if (!result)
                     return BadRequest("Échec de l'enregistrement de l'évaluation.");
 
+                await _kafkaPublisher.PublishAsync("evaluations-module", new 
+                {
+                    EventType = "EvaluationModuleSubmitted",
+                    UserId = dto.UserId,
+                    ModuleId = dto.ModuleId,
+                    EvaluationDate = DateTime.UtcNow,
+                    Details = new 
+                    {
+                        NombreReponses = dto.Reponses.Count,
+                        PresenceCommentaire = !string.IsNullOrEmpty(dto.Commentaire)
+                    }
+                });
+
                 return Ok("Évaluation du module soumise avec succès.");
+            }
+             catch (ProduceException<Null, string> kafkaEx) // Nouveau
+            {
+                _logger.LogError($"Erreur Kafka: {kafkaEx.Error.Reason}");
+                // Fallback optionnel : stocker en base pour rejouer plus tard
+                return Ok("Évaluation enregistrée (notification échouée)");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Erreur interne");
                 return StatusCode(500, $"Erreur interne du serveur : {ex.Message}");
             }
         }

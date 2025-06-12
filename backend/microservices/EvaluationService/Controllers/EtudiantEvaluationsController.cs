@@ -4,6 +4,8 @@ using EvaluationService.Dtos;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using Confluent.Kafka;
+
 namespace EvaluationService.Controllers
 {
     [ApiController]
@@ -11,10 +13,15 @@ namespace EvaluationService.Controllers
     public class EtudiantEvaluationController : ControllerBase
     {
         private readonly EvaluationEtudiantService _service;
+        private readonly KafkaEventPublisher _kafkaPublisher; // Remplace IProducer
+        private readonly ILogger<EtudiantEvaluationController> _logger;
 
-        public EtudiantEvaluationController(EvaluationEtudiantService service)
+        public EtudiantEvaluationController(EvaluationEtudiantService service, KafkaEventPublisher kafkaPublisher, 
+            ILogger<EtudiantEvaluationController> logger)
         {
             _service = service;
+            _kafkaPublisher = kafkaPublisher;
+            _logger = logger;
         }
 
 
@@ -32,10 +39,24 @@ namespace EvaluationService.Controllers
                 if (!result)
                     return BadRequest("Échec de l'enregistrement de l'évaluation.");
 
+                // --- AJOUT: Publication Kafka ---
+                await _kafkaPublisher.PublishAsync("evaluations-etudiant", new
+                {
+                    EventType = "EvaluationEtudiantCreated",
+                    Evaluation = dto,
+                    Timestamp = DateTime.UtcNow
+                });
+
                 return Ok("Évaluation de l'étudiant soumise avec succès.");
+            }
+            catch (ProduceException<Null, string> kafkaEx) // Gestion spécifique Kafka
+            {
+                _logger.LogError($"Erreur Kafka: {kafkaEx.Error.Reason}");
+                return StatusCode(500, "Évaluation enregistrée mais erreur de notification");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Erreur interne");
                 return StatusCode(500, $"Erreur interne du serveur : {ex.Message}");
             }
         }

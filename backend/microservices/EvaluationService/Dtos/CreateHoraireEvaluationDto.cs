@@ -9,5 +9,8 @@ namespace EvaluationService.Dtos
         public float NoteGlobale { get; set; }
 
         public List<ReponseDto> Reponses { get; set; }
+
+        public int HoraireId { get; set; }
+
     }
 }

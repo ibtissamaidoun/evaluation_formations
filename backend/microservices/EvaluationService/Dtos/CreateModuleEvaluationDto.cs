@@ -11,6 +11,11 @@ namespace EvaluationService.Dtos
         public int ProfId { get; set; }            // Le professeur choisi par l'étudiant
         public string ModuleType { get; set; }     // Type de module : Cours, TD, TP, CC
         public List<ReponseDto> Reponses { get; set; } // Liste des réponses aux questions
+
+        public int EspaceId { get; set; }
+        public int ModuleId { get; set; }
+
+
     }
 }
 

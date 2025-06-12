@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EvaluationService.Dtos;
 using EvaluationService.Services;
+using Confluent.Kafka;
 
 namespace EvaluationService.Controllers
 {
@@ -9,10 +10,12 @@ namespace EvaluationService.Controllers
     public class EvaluationEspaceController : ControllerBase
     {
         private readonly EspaceEvaluationService _service;
+        private readonly KafkaEventPublisher _kafkaPublisher;
 
-        public EvaluationEspaceController(EspaceEvaluationService service)
+        public EvaluationEspaceController(EspaceEvaluationService service, KafkaEventPublisher kafkaPublisher)
         {
             _service = service;
+            _kafkaPublisher = kafkaPublisher;
         }
 
         [HttpPost("soumettre")]
@@ -30,8 +33,19 @@ namespace EvaluationService.Controllers
 
                 if (!result)
                     return BadRequest("Échec de l'enregistrement de l'évaluation.");
-
+                //publication  de l'evenementt Kafka
+                await _kafkaPublisher.PublishAsync("evaluations-espace", new
+                {
+                    EventType = "EvaluationEspaceSubmitted",
+                    UserId = dto.UserId,
+                    EspaceId = dto.EspaceId
+                });
                 return Ok("Évaluation de l'espace scolaire soumise avec succès.");
+            }
+             catch (ProduceException<Null, string> kafkaEx)
+            {
+                // Gestion spécifique des erreurs Kafka
+                return StatusCode(500, $"Erreur Kafka: {kafkaEx.Error.Reason}");
             }
             catch (Exception ex)
             {
