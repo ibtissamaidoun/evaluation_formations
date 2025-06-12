@@ -5,7 +5,6 @@ import { EvaluationComponent  } from './features/pages/Evaluation';
 import { ModuleEvaluationComponent } from './features/pages/module-evaluation/module-evaluation.component';
 import { ScheduleEvaluationComponent } from './features/dashboard/components/schedule-evaluation.component';
 import { SpaceEvaluationComponent } from './features/dashboard/components/space-evaluation.component';
-//import { ModuleDetailComponent } from './features/pages/module-evaluation/module-detail/module-detail.component';
 import { ListeComponent } from './features/pages/module-evaluation/module-detail/liste.component';
 import { CoursEvaluationComponent } from './features/pages/module-evaluation/cours/cours.component';
 import { EvaluationCompleteComponent } from './features/pages/module-evaluation/evaluation-complete.component';
@@ -20,9 +19,8 @@ import { EvaluationReportsComponent } from './features/pages/evaluation-reports/
 import { FormManagementComponent } from './features/pages/new-form-dialog/form-management.component';
 import { UserManagementComponent } from './features/pages/user-management/user-management.component';
 import { PlatformSettingsComponent } from './features/pages/platform-settings/platform-settings.component';
-// import { DashboardProfComponent } from './features/dashboard_Prof/dashboard_prof.component';
-// import { Landing } from './app/pages/landing/landing';
-// import { Notfound } from './app/pages/notfound/notfound';
+import {TeacherDashboardComponent} from './features/dashboard_prof/teacher-dashboard.component';
+import {EvaluationSelectionPageComponent} from './features/pages/evaluation-selection-page/evaluation-selection-page.component';
 
 export const appRoutes: Routes = [
   {path: 'reset', component: ResetComponent},
@@ -32,24 +30,14 @@ export const appRoutes: Routes = [
         component: AppLayout,
         children: [
             { path: 'dashboard', component: Dashboard },
-            { path: 'dashboardAdmin', component: DashboardAdminCompactComponent },
-            // { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
-            { path: 'EvaluationReports', component: EvaluationReportsComponent },
-            { path: 'FormManagement', component: FormManagementComponent },
-            { path: 'UserManagement', component:  UserManagementComponent },
-            { path: 'Settings', component:   PlatformSettingsComponent },
+            {path: 'Evaluation', component: EvaluationComponent},
             { path: 'module-evaluation', component: ModuleEvaluationComponent },
-           
-          
-            
-            // { path: 'module-evaluation/module-detail/module-detail', component: ModuleDetailComponent },
             { path: 'module-evaluation/module-detail/liste', component: ListeComponent },
             {path: 'espace-evaluation', component: EspaceEvaluationComponent},
             {path: 'schedul-evaluation', component:SchedulEvaluationComponent },
             {path: 'module-evaluation/cours', component: CoursEvaluationComponent},
             {path: "module-evaluation/td",
-            component: TdEvaluationComponent,
-          },
+            component: TdEvaluationComponent },
           {
             path: "module-evaluation/tp",
             component: TpEvaluationComponent,
@@ -67,30 +55,31 @@ export const appRoutes: Routes = [
             },
             {
               path: 'schedule-evaluation',
-              component: ScheduleEvaluationComponent
-            }
-            // {
-            //   path: 'Evaluation/:type',
-            //   loadComponent: () => import("./features/pages/module-evaluation/module-detail/module-detail.component").then((m) => m.ModuleDetailComponent),
-            // },
-            // { path: 'pages', loadChildren: () => import('./features/pages/pages.routes') }
-        ]
-    },
-    // { path: 'landing', component: Landing },
-    // { path: 'notfound', component: Notfound },
-    // { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
-    // { path: '**', redirectTo: '/notfound' }
+              component: ScheduleEvaluationComponent}
+            ]
+            },
+    {
+            path: 'admin',
+            component: AppLayout,
+            children: [
+                { path: 'dashboard', component: DashboardAdminCompactComponent },
+                { path: 'reports/evaluation', component: EvaluationReportsComponent },
+                { path: 'form/manage', component: FormManagementComponent },
+                { path: 'user/manage', component:  UserManagementComponent},
+                { path: 'settings', component: PlatformSettingsComponent }
+            ]
+        },
+        
+        {
+          path: 'prof',
+          component: AppLayout,
+          children: [
+              { path: 'dashboard', component: TeacherDashboardComponent },
+              { path: 'evaluation', component: EvaluationSelectionPageComponent },
+              { path: 'form/manage', component: FormManagementComponent },
+              { path: 'user/manage', component:  UserManagementComponent},
+              { path: 'settings', component: PlatformSettingsComponent }
+          ]
+      },
 ];
 
-
-// export const appRoutes: Routes = [
-//   {
-//     path: '',
-//     redirectTo: 'dashboard',
-//     pathMatch: 'full'
-//   },
-//   {
-//     path: 'dashboard',
-//     component: Dashboard
-//   }
-// ];
