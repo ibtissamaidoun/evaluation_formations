@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+=======
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+>>>>>>> dash_navbar
 
 @Component({
   selector: 'app-reset',
@@ -11,6 +18,7 @@ import { AuthService } from '../../core/auth/auth.service';
   standalone: true,
   imports: [
     CommonModule,
+<<<<<<< HEAD
     RouterModule,
     ReactiveFormsModule,
     FormsModule
@@ -141,3 +149,37 @@ export class ResetComponent implements OnInit {
     return 'Invalid password.';
   }
 }
+=======
+    ReactiveFormsModule,
+    RouterModule
+  ]
+})
+
+export class ResetComponent {
+  resetForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.resetForm = this.fb.group({
+      password: ['', Validators.required],
+      confirmPassword: ['', Validators.required]
+    }, { validator: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(form: FormGroup) {
+    return form.get('password')?.value === form.get('confirmPassword')?.value 
+      ? null 
+      : { mismatch: true };
+  }
+
+  get password() {
+    return this.resetForm.get('password');
+  }
+
+  onSubmit() {
+    if (this.resetForm.valid) {
+      // Ajouter ici la logique de soumission
+      console.log('Password changed:', this.resetForm.value);
+    }
+  }
+}
+>>>>>>> dash_navbar
