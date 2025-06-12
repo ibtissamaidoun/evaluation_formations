@@ -1,3 +1,42 @@
+# version: '3.8'
+
+# services:
+#   frontend:
+#     build: ./frontend
+#     ports:
+#       - "4200:4200"
+#     depends_on:
+#       - backend
+
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "5001:5000"  # Mappe le port 5000 du conteneur sur 5001 de l'hôte
+#     environment:
+#       - DB_HOST=db
+#       - DB_PORT=5432
+#       - DB_NAME=monapp
+#       - DB_USER=admin
+#       - DB_PASSWORD=secret
+#       - ASPNETCORE_URLS=http://+:5000  # S'assure que l'application écoute sur le port 5000
+#     depends_on:
+#       - db
+#     volumes:
+#       - ./dataProtectionKeys:/root/.aspnet/DataProtection-Keys  # Persister les clés de protection
+
+#   db:
+#     image: postgres:15
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       - POSTGRES_DB=projet_ginf2
+#       - POSTGRES_USER=admin
+#       - POSTGRES_PASSWORD=admin123
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
 version: '3.8'
 
 services:
@@ -15,11 +54,16 @@ services:
     ports:
       - "5001:5000"  # Mappe le port 5000 du conteneur sur 5001 de l'hôte
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=projet_ginf2;Username=admin;Password=admin123
-      - ASPNETCORE_URLS=http://+:5000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=monapp
+      - DB_USER=admin
+      - DB_PASSWORD=secret
+      - ASPNETCORE_URLS=http://+:5000  # S'assure que l'application écoute sur le port 5000
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092  # Connexion à Kafka
     depends_on:
       - db
+      - kafka
     volumes:
       - ./dataProtectionKeys:/root/.aspnet/DataProtection-Keys  # Persister les clés de protection
     networks:
@@ -38,9 +82,65 @@ services:
     networks:
       - app-network  # Ajout du réseau personnalisé
 
+  # Services Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      - zookeeper-logs:/var/lib/zookeeper/log
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
 volumes:
   postgres_data:
+<<<<<<< HEAD
 
 networks:
   app-network:  # Définir le réseau personnalisé
     driver: bridge  # Utiliser le mode "bridge" pour la communication entre conteneurs
+=======
+  zookeeper-data:
+  zookeeper-logs:
+  kafka-data:
+>>>>>>> dash_navbar
