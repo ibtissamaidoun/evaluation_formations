@@ -21,86 +21,37 @@ export class AppMenuAdmin {
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
-                items: [{ label: 'DashboardAdmin', icon: 'pi pi-fw pi-home', routerLink: ['/dashboardAdmin'] }]
+                // label: 'Home',
+                items: [{ label: 'DashboardAdmin', icon: 'pi pi-fw pi-home', routerLink: ['/admin/dashboard'] }]
             },
             {
-                label: 'Reports',
+                // label: 'Reports',
                 items: [
-                    { label: 'Evaluation Reports', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/EvaluationReports'] },
+                    { label: 'Evaluation Reports', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/reports/evaluation'] }
                    
                 ]
             },
             {
-                label: 'Form Management',
+                // label: 'Form Management',
                 items: [
-                    { label: 'Form managements', icon: 'pi pi-fw pi-plus', routerLink: ['/FormManagement'] },
-                    // { label: 'Manage Forms', icon: 'pi pi-fw pi-list', routerLink: ['/admin/forms/manage'] },
-                    // { label: 'Form Templates', icon: 'pi pi-fw pi-file', routerLink: ['/admin/forms/templates'] }
+                    { label: 'Form Management', icon: 'pi pi-fw pi-file', routerLink: ['/admin/forms/manage'] }
+               
                 ]
             },
             {
-                label: 'User Management',
+                // label: 'User Management',
                 items: [
-                    { label: 'User Management', icon: 'pi pi-fw pi-users', routerLink: ['/UserManagement'] },
                   
+                    { label: 'User Management', icon: 'pi pi-fw pi-shield', routerLink: ['/admin/users/manage'] }
                 ]
             },
             {
-                label: 'Settings',
+                // label: 'Settings',
                 items: [
-                    { label: 'Settings', icon: 'pi pi-fw pi-cog', routerLink: ['/Settings'] },
-                   
+               
+                    { label: ' Settings', icon: 'pi pi-fw pi-lock', routerLink: ['/admin/setting'] }
                 ]
             }
-            // {
-            //     label: 'Pages',
-            //     icon: 'pi pi-fw pi-briefcase',
-            //     routerLink: ['/pages'],
-            //     items: [
-            //         {
-            //             label: 'Landing',
-            //             icon: 'pi pi-fw pi-globe',
-            //             routerLink: ['/landing']
-            //         },
-            //         {
-            //             label: 'Auth',
-            //             icon: 'pi pi-fw pi-user',
-            //             items: [
-            //                 {
-            //                     label: 'Login',
-            //                     icon: 'pi pi-fw pi-sign-in',
-            //                     routerLink: ['/auth/login']
-            //                 },
-            //                 {
-            //                     label: 'Error',
-            //                     icon: 'pi pi-fw pi-times-circle',
-            //                     routerLink: ['/auth/error']
-            //                 },
-            //                 {
-            //                     label: 'Access Denied',
-            //                     icon: 'pi pi-fw pi-lock',
-            //                     routerLink: ['/auth/access']
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             label: 'Crud',
-            //             icon: 'pi pi-fw pi-pencil',
-            //             routerLink: ['/pages/crud']
-            //         },
-            //         {
-            //             label: 'Not Found',
-            //             icon: 'pi pi-fw pi-exclamation-circle',
-            //             routerLink: ['/pages/notfound']
-            //         },
-            //         {
-            //             label: 'Empty',
-            //             icon: 'pi pi-fw pi-circle-off',
-            //             routerLink: ['/pages/empty']
-            //         }
-            //     ]
-            // }
         ];
     }
 }

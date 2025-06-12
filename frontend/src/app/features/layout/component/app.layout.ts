@@ -64,11 +64,7 @@ export class AppLayout {
     }
 
     isAdminRoute(): boolean {
-        return this.currentRoute.includes('dashboardAdmin') || 
-               this.currentRoute.includes('admin/reports') ||
-               this.currentRoute.includes('admin/forms') ||
-               this.currentRoute.includes('admin/users') ||
-               this.currentRoute.includes('admin/settings');
+        return this.currentRoute.startsWith('/admin');
     }
 
     isOutsideClicked(event: MouseEvent) {

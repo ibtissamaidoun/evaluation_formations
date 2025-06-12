@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from './features/layout/component/app.layout';
 import { Dashboard } from './features/dashboard/dashboard.component';
-import { EvaluationComponent  } from './features/pages/Evaluation';
+import { EvaluationComponent } from './features/pages/Evaluation';
 import { ModuleEvaluationComponent } from './features/pages/module-evaluation/module-evaluation.component';
 import { ScheduleEvaluationComponent } from './features/dashboard/components/schedule-evaluation.component';
 import { SpaceEvaluationComponent } from './features/dashboard/components/space-evaluation.component';
@@ -74,6 +74,19 @@ export const appRoutes: Routes = [
             //   loadComponent: () => import("./features/pages/module-evaluation/module-detail/module-detail.component").then((m) => m.ModuleDetailComponent),
             // },
             // { path: 'pages', loadChildren: () => import('./features/pages/pages.routes') }
+        ]
+    },
+    {
+        path: 'admin',
+        component: AppLayout,
+        children: [
+            { path: 'dashboard', component: DashboardAdminCompactComponent },
+            { path: 'reports/evaluation', component: EvaluationReportsComponent },
+           
+
+            { path: 'forms/manage', component: FormManagementComponent },
+            { path: 'users/manage', component:  UserManagementComponent },
+            { path: 'setting', component:   PlatformSettingsComponent }
         ]
     },
     // { path: 'landing', component: Landing },
