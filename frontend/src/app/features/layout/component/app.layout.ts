@@ -64,7 +64,9 @@ export class AppLayout {
     }
 
     isAdminRoute(): boolean {
+
         return this.currentRoute.includes('admin') 
+
     }
 
     isOutsideClicked(event: MouseEvent) {

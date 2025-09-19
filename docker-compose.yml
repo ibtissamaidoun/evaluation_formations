@@ -46,6 +46,8 @@ services:
       - "4200:4200"
     depends_on:
       - backend
+    networks:
+      - app-network  # Ajout du réseau personnalisé
 
   backend:
     build: ./backend
@@ -64,6 +66,8 @@ services:
       - kafka
     volumes:
       - ./dataProtectionKeys:/root/.aspnet/DataProtection-Keys  # Persister les clés de protection
+    networks:
+      - app-network  # Ajout du réseau personnalisé
 
   db:
     image: postgres:15
@@ -75,6 +79,8 @@ services:
       - POSTGRES_PASSWORD=admin123
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network  # Ajout du réseau personnalisé
 
   # Services Kafka
   zookeeper:
@@ -128,6 +134,13 @@ services:
 
 volumes:
   postgres_data:
+<<<<<<< HEAD
+
+networks:
+  app-network:  # Définir le réseau personnalisé
+    driver: bridge  # Utiliser le mode "bridge" pour la communication entre conteneurs
+=======
   zookeeper-data:
   zookeeper-logs:
   kafka-data:
+>>>>>>> dash_navbar

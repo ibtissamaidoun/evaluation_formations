@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "WyA/cSoOmZwZBYcZrflAaLifk/kBK2gZf6GwGNXLHu8=",
+  "Source": "EvaluationService",
+  "BasePath": "_content/EvaluationService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
