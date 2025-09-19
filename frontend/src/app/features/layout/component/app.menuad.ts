@@ -21,21 +21,27 @@ export class AppMenuAdmin {
     ngOnInit() {
         this.model = [
             {
-                // label: 'Home',
+
+                label: 'Home',
+
                 items: [{ label: 'DashboardAdmin', icon: 'pi pi-fw pi-home', routerLink: ['/admin/dashboard'] }]
             },
             {
                 // label: 'Reports',
                 items: [
-                    { label: 'Evaluation Reports', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/reports/evaluation'] }
+
+                    { label: 'Evaluation Reports', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/admin/reports/evaluation'] },
+
                    
                 ]
             },
             {
                 // label: 'Form Management',
                 items: [
-                    { label: 'Form Management', icon: 'pi pi-fw pi-file', routerLink: ['/admin/forms/manage'] }
-               
+
+                    { label: 'Form managements', icon: 'pi pi-fw pi-plus', routerLink: ['/admin/form/manage'] },
+                   
+
                 ]
             },
             {
@@ -48,10 +54,18 @@ export class AppMenuAdmin {
             {
                 // label: 'Settings',
                 items: [
+
+                    { label: 'Settings', icon: 'pi pi-fw pi-cog', routerLink: ['/admin/settings'] },
+                   
+                ]
+            }
+          
+
                
                     { label: ' Settings', icon: 'pi pi-fw pi-lock', routerLink: ['/admin/setting'] }
                 ]
             }
+
         ];
     }
 }
